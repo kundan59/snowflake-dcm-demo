@@ -9,6 +9,9 @@
 --       3. Event-driven actions (e.g., flagging suspicious transactions for fraud teams).
 -- ==============================================================================
 
+USE ROLE ACCOUNTADMIN;
+GRANT EXECUTE TASK ON ACCOUNT TO ROLE DATA_ENGINEER_ROLE;
+
 USE ROLE DATA_ENGINEER_ROLE;
 USE WAREHOUSE TRANSFORM_WH;
 USE DATABASE SILVER_DB;

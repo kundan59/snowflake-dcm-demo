@@ -10,6 +10,9 @@
 -- ==============================================================================
 
 USE ROLE ACCOUNTADMIN;
+GRANT EXECUTE TASK ON ACCOUNT TO ROLE DATA_ENGINEER_ROLE;
+GRANT EXECUTE TASK ON ACCOUNT TO ROLE ACCOUNTADMIN;
+CREATE SCHEMA IF NOT EXISTS UTILS_DB.PUBLIC;
 
 -- -----------------------------------------------------------------------------
 -- 1. PRE-SEED PRODUCT CATALOG MASTER DATA (BRONZE_DB)
@@ -127,7 +130,7 @@ SELECT
     '1. BRONZE_DB (Raw Ingest)' AS pipeline_stage,
     'RAW_ORDERS' AS object_name,
     COUNT(*) AS total_records,
-    MAX(ingested_at) AS latest_record_time,
+    MAX(ingested_at)::TIMESTAMP_NTZ AS latest_record_time,
     'Scheduled Stream Task' AS automation_engine
 FROM BRONZE_DB.RAW.RAW_ORDERS
 UNION ALL
@@ -135,7 +138,7 @@ SELECT
     '2. SILVER_DB (Conformed)' AS pipeline_stage,
     'DT_ORDERS_FLATTENED' AS object_name,
     COUNT(*) AS total_records,
-    MAX(order_timestamp) AS latest_record_time,
+    MAX(order_timestamp)::TIMESTAMP_NTZ AS latest_record_time,
     'Declarative Dynamic Table (1m Lag)' AS automation_engine
 FROM SILVER_DB.CONFORMED.DT_ORDERS_FLATTENED
 UNION ALL
@@ -143,7 +146,7 @@ SELECT
     '3. SILVER_DB (Fraud Anomaly)' AS pipeline_stage,
     'FLAGGED_SUSPICIOUS_ORDERS' AS object_name,
     COUNT(*) AS total_records,
-    MAX(last_updated_at) AS latest_record_time,
+    MAX(last_updated_at)::TIMESTAMP_NTZ AS latest_record_time,
     'Imperative Stream & Task (1m Schedule)' AS automation_engine
 FROM SILVER_DB.FRAUD.FLAGGED_SUSPICIOUS_ORDERS
 UNION ALL
@@ -151,7 +154,7 @@ SELECT
     '4. GOLD_DB (Analytics Mart)' AS pipeline_stage,
     'DT_HOURLY_SALES_KPIS' AS object_name,
     COUNT(*) AS total_records,
-    MAX(last_order_processed_at) AS latest_record_time,
+    MAX(last_order_processed_at)::TIMESTAMP_NTZ AS latest_record_time,
     'Declarative Dynamic Table (Cascaded)' AS automation_engine
 FROM GOLD_DB.ANALYTICS.DT_HOURLY_SALES_KPIS;
 
