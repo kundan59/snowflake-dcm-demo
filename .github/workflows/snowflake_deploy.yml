@@ -50,24 +50,7 @@ jobs:
 
       - name: Bootstrap Foundation Objects (If Not Exists)
         run: |
-          python -c "
-          import snowflake.connector, os
-          try:
-              conn = snowflake.connector.connect(
-                  account=os.environ['SNOWFLAKE_ACCOUNT'],
-                  user=os.environ['SNOWFLAKE_USER'],
-                  password=os.environ['SNOWFLAKE_PASSWORD'],
-                  role=os.environ.get('SNOWFLAKE_ROLE', 'ACCOUNTADMIN')
-              )
-              cs = conn.cursor()
-              cs.execute('CREATE DATABASE IF NOT EXISTS UTILS_DB')
-              cs.execute('CREATE SCHEMA IF NOT EXISTS UTILS_DB.CHANGELOG')
-              cs.execute('CREATE WAREHOUSE IF NOT EXISTS TRANSFORM_WH WAREHOUSE_SIZE = XSMALL AUTO_SUSPEND = 60 INITIALLY_SUSPENDED = TRUE')
-              conn.close()
-              print('Bootstrap check completed successfully.')
-          except Exception as e:
-              print(f'Bootstrap notice: {e}')
-          "
+          python cicd/bootstrap_snowflake.py
 
       - name: Schemachange Dry-Run Validation
         run: |
@@ -105,36 +88,7 @@ jobs:
 
       - name: Bootstrap Foundation Objects (If Not Exists)
         run: |
-          python -c "
-          import snowflake.connector, os
-          try:
-              conn = snowflake.connector.connect(
-                  account=os.environ['SNOWFLAKE_ACCOUNT'],
-                  user=os.environ['SNOWFLAKE_USER'],
-                  password=os.environ['SNOWFLAKE_PASSWORD'],
-                  role=os.environ.get('SNOWFLAKE_ROLE', 'ACCOUNTADMIN')
-              cs = conn.cursor()
-              cs.execute('CREATE DATABASE IF NOT EXISTS UTILS_DB')
-              cs.execute('CREATE SCHEMA IF NOT EXISTS UTILS_DB.CHANGELOG')
-              cs.execute('CREATE WAREHOUSE IF NOT EXISTS TRANSFORM_WH WAREHOUSE_SIZE = XSMALL AUTO_SUSPEND = 60 INITIALLY_SUSPENDED = TRUE')
-              cs.execute('''
-                  CREATE TABLE IF NOT EXISTS UTILS_DB.CHANGELOG.CHANGE_HISTORY (
-                      VERSION VARCHAR,
-                      DESCRIPTION VARCHAR,
-                      SCRIPT VARCHAR,
-                      SCRIPT_TYPE VARCHAR,
-                      CHECKSUM VARCHAR,
-                      EXECUTION_TIME NUMBER,
-                      STATUS VARCHAR,
-                      INSTALLED_BY VARCHAR,
-                      INSTALLED_ON TIMESTAMP_LTZ DEFAULT CURRENT_TIMESTAMP()
-                  )
-              ''')
-              conn.close()
-              print('Bootstrap check completed successfully.')
-          except Exception as e:
-              print(f'Bootstrap notice: {e}')
-          "
+          python cicd/bootstrap_snowflake.py
 
       - name: Execute Schemachange Migrations
         run: |
