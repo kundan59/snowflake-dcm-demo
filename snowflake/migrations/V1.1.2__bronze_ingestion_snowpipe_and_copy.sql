@@ -53,8 +53,8 @@ USE SCHEMA BRONZE_DB.RAW;
 -- Table A: Raw Orders landing table (Semi-structured VARIANT)
 CREATE TABLE IF NOT EXISTS BRONZE_DB.RAW.RAW_ORDERS (
     payload VARIANT NOT NULL COMMENT 'Raw nested JSON order payload',
-    source_file VARCHAR(500) DEFAULT METADATA$FILENAME COMMENT 'Azure blob file origin',
-    file_row_number NUMBER DEFAULT METADATA$FILE_ROW_NUMBER COMMENT 'Row index inside blob',
+    source_file VARCHAR(500) COMMENT 'Staged file origin',
+    file_row_number NUMBER COMMENT 'Row index inside staged file',
     ingested_at TIMESTAMP_LTZ DEFAULT CURRENT_TIMESTAMP() COMMENT 'Ingestion timestamp'
 )
 COMMENT = 'Bronze Raw Landing: Schema-on-read JSON stream ingested via Snowpipe';
