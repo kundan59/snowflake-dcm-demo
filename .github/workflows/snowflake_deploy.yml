@@ -24,12 +24,12 @@ env:
 
 jobs:
   # ============================================================================
-  # 1. CI VALIDATION (PULL REQUESTS)
+  # 1. CI VALIDATION (LINT & DRY-RUN)
+  # Runs on every push, pull request, and manual trigger
   # ============================================================================
   ci_validation:
     name: "CI: Linting & Dry-Run Validation"
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -67,11 +67,12 @@ jobs:
             --dry-run
 
   # ============================================================================
-  # 2. CD DEPLOYMENT (PUSH / MERGE TO MAIN / MANUAL TRIGGER)
+  # 2. CD DEPLOYMENT (AUTOMATIC AFTER CI PASSES ON MAIN)
   # ============================================================================
   deploy_to_snowflake:
     name: "CD: Deploy Migrations to Snowflake"
     runs-on: ubuntu-latest
+    needs: [ci_validation]
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     steps:
       - name: Checkout Code
