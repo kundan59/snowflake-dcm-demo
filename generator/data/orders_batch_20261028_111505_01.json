@@ -1,0 +1,452 @@
+[
+  {
+    "event_id": "evt_5a8ff031-03bd-4c28-b957-9cc54a949bd6",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-515676",
+      "customer": {
+        "customer_id": "CUST-3034",
+        "name": "Hiroshi Chen",
+        "email": "hiroshi.chen@fintech-hub.org",
+        "region": "EMEA",
+        "tier": "GOLD"
+      },
+      "payment": {
+        "method": "PAYPAL",
+        "card_last4": "6689",
+        "currency": "EUR",
+        "total_amount": 630.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-303",
+          "product_name": "Zero-Copy Snapshot Orchestrator",
+          "category": "DataOps & Governance",
+          "quantity": 3,
+          "unit_price": 210.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 1,
+        "address": {
+          "city": "Paris",
+          "country": "France"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_07aa9178-dda9-475b-80a5-fb4e6d62d382",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-773953",
+      "customer": {
+        "customer_id": "CUST-5641",
+        "name": "Elena Novak",
+        "email": "elena.novak@cloudcorp.com",
+        "region": "US",
+        "tier": "SILVER"
+      },
+      "payment": {
+        "method": "PAYPAL",
+        "card_last4": "9058",
+        "currency": "USD",
+        "total_amount": 351.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-301",
+          "product_name": "Data Lineage & Tagging Engine",
+          "category": "DataOps & Governance",
+          "quantity": 2,
+          "unit_price": 175.5
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 1,
+        "address": {
+          "city": "Austin",
+          "country": "USA"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_dab7ba10-693f-4153-ad7a-b4e4c9eb1de6",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-347479",
+      "customer": {
+        "customer_id": "CUST-4567",
+        "name": "Charlie Kowalski",
+        "email": "charlie.kowalski@innovate.io",
+        "region": "APAC",
+        "tier": "BRONZE"
+      },
+      "payment": {
+        "method": "CREDIT_CARD",
+        "card_last4": "6924",
+        "currency": "USD",
+        "total_amount": 610.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-103",
+          "product_name": "Apache Iceberg Metadata Accelerator",
+          "category": "Cloud Infrastructure",
+          "quantity": 2,
+          "unit_price": 185.0
+        },
+        {
+          "item_id": "ITM-102",
+          "product_name": "Lakehouse High-IOPS Flash Storage",
+          "category": "Cloud Infrastructure",
+          "quantity": 2,
+          "unit_price": 120.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 5,
+        "address": {
+          "city": "Bangalore",
+          "country": "India"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_7456368d-2b88-4741-ac95-f32be9ed1563",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-816111",
+      "customer": {
+        "customer_id": "CUST-9674",
+        "name": "Diana Kowalski",
+        "email": "diana.kowalski@globalsystems.de",
+        "region": "APAC",
+        "tier": "GOLD"
+      },
+      "payment": {
+        "method": "WIRE_TRANSFER",
+        "card_last4": "1062",
+        "currency": "USD",
+        "total_amount": 1685.99
+      },
+      "items": [
+        {
+          "item_id": "ITM-203",
+          "product_name": "Data Quality DMF Metric Monitor",
+          "category": "Analytics & AI",
+          "quantity": 1,
+          "unit_price": 89.99
+        },
+        {
+          "item_id": "ITM-201",
+          "product_name": "Cortex Generative Search License",
+          "category": "Analytics & AI",
+          "quantity": 4,
+          "unit_price": 399.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 1,
+        "address": {
+          "city": "Sydney",
+          "country": "Australia"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_3bc57f7b-1128-4831-b6cb-a3ccc7f1baf8",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-727608",
+      "customer": {
+        "customer_id": "CUST-5758",
+        "name": "Bob Sharma",
+        "email": "bob.sharma@globalsystems.de",
+        "region": "LATAM",
+        "tier": "GOLD"
+      },
+      "payment": {
+        "method": "CREDIT_CARD",
+        "card_last4": "7261",
+        "currency": "USD",
+        "total_amount": 912.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-301",
+          "product_name": "Data Lineage & Tagging Engine",
+          "category": "DataOps & Governance",
+          "quantity": 4,
+          "unit_price": 175.5
+        },
+        {
+          "item_id": "ITM-303",
+          "product_name": "Zero-Copy Snapshot Orchestrator",
+          "category": "DataOps & Governance",
+          "quantity": 1,
+          "unit_price": 210.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 5,
+        "address": {
+          "city": "Bogota",
+          "country": "Colombia"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_769a02c2-bb9f-44e6-af0c-75a41f6a25cb",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-931357",
+      "customer": {
+        "customer_id": "CUST-7807",
+        "name": "Diana Dubois",
+        "email": "diana.dubois@enterprise-data.net",
+        "region": "EMEA",
+        "tier": "BRONZE"
+      },
+      "payment": {
+        "method": "CREDIT_CARD",
+        "card_last4": "1992",
+        "currency": "EUR",
+        "total_amount": 305.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-102",
+          "product_name": "Lakehouse High-IOPS Flash Storage",
+          "category": "Cloud Infrastructure",
+          "quantity": 1,
+          "unit_price": 120.0
+        },
+        {
+          "item_id": "ITM-103",
+          "product_name": "Apache Iceberg Metadata Accelerator",
+          "category": "Cloud Infrastructure",
+          "quantity": 1,
+          "unit_price": 185.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 2,
+        "address": {
+          "city": "London",
+          "country": "United Kingdom"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_d529b5a1-f18c-46aa-9a47-9d82c976994b",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-241534",
+      "customer": {
+        "customer_id": "CUST-8232",
+        "name": "Bob O'Connor",
+        "email": "bob.o'connor@globalsystems.de",
+        "region": "LATAM",
+        "tier": "SILVER"
+      },
+      "payment": {
+        "method": "WIRE_TRANSFER",
+        "card_last4": "1025",
+        "currency": "USD",
+        "total_amount": 1542.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-301",
+          "product_name": "Data Lineage & Tagging Engine",
+          "category": "DataOps & Governance",
+          "quantity": 4,
+          "unit_price": 175.5
+        },
+        {
+          "item_id": "ITM-303",
+          "product_name": "Zero-Copy Snapshot Orchestrator",
+          "category": "DataOps & Governance",
+          "quantity": 4,
+          "unit_price": 210.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 1,
+        "address": {
+          "city": "Bogota",
+          "country": "Colombia"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_7d8beae8-62c0-49ea-be56-a00a84045c5b",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-556829",
+      "customer": {
+        "customer_id": "CUST-1978",
+        "name": "Charlie Chen",
+        "email": "charlie.chen@enterprise-data.net",
+        "region": "LATAM",
+        "tier": "PLATINUM"
+      },
+      "payment": {
+        "method": "WIRE_TRANSFER",
+        "card_last4": "7007",
+        "currency": "USD",
+        "total_amount": 1534.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-102",
+          "product_name": "Lakehouse High-IOPS Flash Storage",
+          "category": "Cloud Infrastructure",
+          "quantity": 4,
+          "unit_price": 120.0
+        },
+        {
+          "item_id": "ITM-103",
+          "product_name": "Apache Iceberg Metadata Accelerator",
+          "category": "Cloud Infrastructure",
+          "quantity": 3,
+          "unit_price": 185.0
+        },
+        {
+          "item_id": "ITM-101",
+          "product_name": "Snowpark Optimized Virtual Compute",
+          "category": "Cloud Infrastructure",
+          "quantity": 2,
+          "unit_price": 249.5
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 1,
+        "address": {
+          "city": "Mexico City",
+          "country": "Mexico"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_bd7a7b1c-eee2-408d-a279-1d0fe73d6e67",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-868700",
+      "customer": {
+        "customer_id": "CUST-4561",
+        "name": "Diana Tanaka",
+        "email": "diana.tanaka@enterprise-data.net",
+        "region": "EMEA",
+        "tier": "BRONZE"
+      },
+      "payment": {
+        "method": "CREDIT_CARD",
+        "card_last4": "6321",
+        "currency": "EUR",
+        "total_amount": 1721.99
+      },
+      "items": [
+        {
+          "item_id": "ITM-202",
+          "product_name": "Automated Feature Store Registry",
+          "category": "Analytics & AI",
+          "quantity": 3,
+          "unit_price": 145.0
+        },
+        {
+          "item_id": "ITM-201",
+          "product_name": "Cortex Generative Search License",
+          "category": "Analytics & AI",
+          "quantity": 3,
+          "unit_price": 399.0
+        },
+        {
+          "item_id": "ITM-203",
+          "product_name": "Data Quality DMF Metric Monitor",
+          "category": "Analytics & AI",
+          "quantity": 1,
+          "unit_price": 89.99
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 1,
+        "address": {
+          "city": "Frankfurt",
+          "country": "Germany"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_8e2d0c6e-5855-43fb-a567-d372ca8c0443",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-824901",
+      "customer": {
+        "customer_id": "CUST-7102",
+        "name": "Franklin O'Connor",
+        "email": "franklin.o'connor@fintech-hub.org",
+        "region": "LATAM",
+        "tier": "SILVER"
+      },
+      "payment": {
+        "method": "WIRE_TRANSFER",
+        "card_last4": "8911",
+        "currency": "USD",
+        "total_amount": 1067.97
+      },
+      "items": [
+        {
+          "item_id": "ITM-203",
+          "product_name": "Data Quality DMF Metric Monitor",
+          "category": "Analytics & AI",
+          "quantity": 3,
+          "unit_price": 89.99
+        },
+        {
+          "item_id": "ITM-201",
+          "product_name": "Cortex Generative Search License",
+          "category": "Analytics & AI",
+          "quantity": 2,
+          "unit_price": 399.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 4,
+        "address": {
+          "city": "Sao Paulo",
+          "country": "Brazil"
+        }
+      }
+    }
+  }
+]

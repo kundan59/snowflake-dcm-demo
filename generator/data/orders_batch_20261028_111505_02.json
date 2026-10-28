@@ -1,0 +1,234 @@
+[
+  {
+    "event_id": "evt_98427fd2-e05b-47a8-ae08-678cd6352d5d",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125190+00:00",
+    "order": {
+      "order_id": "ORD-2026-957597",
+      "customer": {
+        "customer_id": "CUST-8209",
+        "name": "Grace O'Connor",
+        "email": "grace.o'connor@cloudcorp.com",
+        "region": "LATAM",
+        "tier": "SILVER"
+      },
+      "payment": {
+        "method": "WIRE_TRANSFER",
+        "card_last4": "8661",
+        "currency": "USD",
+        "total_amount": 399.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-201",
+          "product_name": "Cortex Generative Search License",
+          "category": "Analytics & AI",
+          "quantity": 1,
+          "unit_price": 399.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 1,
+        "address": {
+          "city": "Sao Paulo",
+          "country": "Brazil"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_3324a35e-327d-40f8-8e54-f7ac030c98b8",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125754+00:00",
+    "order": {
+      "order_id": "ORD-2026-157042",
+      "customer": {
+        "customer_id": "CUST-2835",
+        "name": "Hiroshi Chen",
+        "email": "hiroshi.chen@innovate.io",
+        "region": "EMEA",
+        "tier": "BRONZE"
+      },
+      "payment": {
+        "method": "CREDIT_CARD",
+        "card_last4": "2203",
+        "currency": "EUR",
+        "total_amount": 385.5
+      },
+      "items": [
+        {
+          "item_id": "ITM-303",
+          "product_name": "Zero-Copy Snapshot Orchestrator",
+          "category": "DataOps & Governance",
+          "quantity": 1,
+          "unit_price": 210.0
+        },
+        {
+          "item_id": "ITM-301",
+          "product_name": "Data Lineage & Tagging Engine",
+          "category": "DataOps & Governance",
+          "quantity": 1,
+          "unit_price": 175.5
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 5,
+        "address": {
+          "city": "Paris",
+          "country": "France"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_5d259e43-636d-4e2d-b846-a91b3199f144",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125754+00:00",
+    "order": {
+      "order_id": "ORD-2026-813601",
+      "customer": {
+        "customer_id": "CUST-8944",
+        "name": "Hiroshi Kowalski",
+        "email": "hiroshi.kowalski@globalsystems.de",
+        "region": "APAC",
+        "tier": "PLATINUM"
+      },
+      "payment": {
+        "method": "PAYPAL",
+        "card_last4": "7122",
+        "currency": "USD",
+        "total_amount": 583.5
+      },
+      "items": [
+        {
+          "item_id": "ITM-303",
+          "product_name": "Zero-Copy Snapshot Orchestrator",
+          "category": "DataOps & Governance",
+          "quantity": 1,
+          "unit_price": 210.0
+        },
+        {
+          "item_id": "ITM-302",
+          "product_name": "Dynamic Masking Policy Controller",
+          "category": "DataOps & Governance",
+          "quantity": 2,
+          "unit_price": 99.0
+        },
+        {
+          "item_id": "ITM-301",
+          "product_name": "Data Lineage & Tagging Engine",
+          "category": "DataOps & Governance",
+          "quantity": 1,
+          "unit_price": 175.5
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 3,
+        "address": {
+          "city": "Bangalore",
+          "country": "India"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_d9b81177-0e0a-476a-b882-518d5dab7b2d",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125754+00:00",
+    "order": {
+      "order_id": "ORD-2026-568512",
+      "customer": {
+        "customer_id": "CUST-5386",
+        "name": "Franklin Chen",
+        "email": "franklin.chen@fintech-hub.org",
+        "region": "LATAM",
+        "tier": "SILVER"
+      },
+      "payment": {
+        "method": "PAYPAL",
+        "card_last4": "8811",
+        "currency": "USD",
+        "total_amount": 1608.5
+      },
+      "items": [
+        {
+          "item_id": "ITM-102",
+          "product_name": "Lakehouse High-IOPS Flash Storage",
+          "category": "Cloud Infrastructure",
+          "quantity": 1,
+          "unit_price": 120.0
+        },
+        {
+          "item_id": "ITM-101",
+          "product_name": "Snowpark Optimized Virtual Compute",
+          "category": "Cloud Infrastructure",
+          "quantity": 3,
+          "unit_price": 249.5
+        },
+        {
+          "item_id": "ITM-103",
+          "product_name": "Apache Iceberg Metadata Accelerator",
+          "category": "Cloud Infrastructure",
+          "quantity": 4,
+          "unit_price": 185.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 3,
+        "address": {
+          "city": "Mexico City",
+          "country": "Mexico"
+        }
+      }
+    }
+  },
+  {
+    "event_id": "evt_2ee76885-60e4-4401-9974-2a99512d814e",
+    "event_type": "order_placed",
+    "timestamp": "2026-10-28T05:45:05.125754+00:00",
+    "order": {
+      "order_id": "ORD-2026-855556",
+      "customer": {
+        "customer_id": "CUST-8791",
+        "name": "Bob Muller",
+        "email": "bob.muller@innovate.io",
+        "region": "EMEA",
+        "tier": "SILVER"
+      },
+      "payment": {
+        "method": "CREDIT_CARD",
+        "card_last4": "3057",
+        "currency": "EUR",
+        "total_amount": 2031.0
+      },
+      "items": [
+        {
+          "item_id": "ITM-202",
+          "product_name": "Automated Feature Store Registry",
+          "category": "Analytics & AI",
+          "quantity": 3,
+          "unit_price": 145.0
+        },
+        {
+          "item_id": "ITM-201",
+          "product_name": "Cortex Generative Search License",
+          "category": "Analytics & AI",
+          "quantity": 4,
+          "unit_price": 399.0
+        }
+      ],
+      "delivery": {
+        "status": "CONFIRMED",
+        "estimated_days": 2,
+        "address": {
+          "city": "Amsterdam",
+          "country": "Netherlands"
+        }
+      }
+    }
+  }
+]

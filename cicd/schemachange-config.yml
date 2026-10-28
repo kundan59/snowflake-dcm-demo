@@ -1,0 +1,18 @@
+# ==============================================================================
+# Schemachange Configuration File
+# ==============================================================================
+
+config-version: 1
+
+# Root folder containing versioned (V...) and repeatable (R...) migration scripts
+root-folder: "snowflake/migrations"
+
+# Snowflake metadata table tracking applied migrations in UTILS_DB
+change-history-table: "UTILS_DB.CHANGELOG.CHANGE_HISTORY"
+
+# Target connection defaults (Can be overridden via environment variables or CLI flags)
+snowflake-account: "${SNOWFLAKE_ACCOUNT}"
+snowflake-user: "${SNOWFLAKE_USER}"
+snowflake-role: "${SNOWFLAKE_ROLE:-ACCOUNTADMIN}"
+snowflake-warehouse: "${SNOWFLAKE_WAREHOUSE:-TRANSFORM_WH}"
+snowflake-database: "${SNOWFLAKE_DATABASE:-UTILS_DB}"

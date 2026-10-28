@@ -1,0 +1,45 @@
+{
+  "event_id": "evt_98432a10-f823-4d7a-8d19-498cbe981201",
+  "event_type": "order_placed",
+  "timestamp": "2026-10-28T10:15:30Z",
+  "order": {
+    "order_id": "ORD-2026-90812",
+    "customer": {
+      "customer_id": "CUST-10492",
+      "name": "Sarah Connor",
+      "email": "sarah.connor@cyberdyne.org",
+      "region": "EMEA",
+      "tier": "PLATINUM"
+    },
+    "payment": {
+      "method": "CREDIT_CARD",
+      "card_last4": "4242",
+      "currency": "EUR",
+      "total_amount": 259.97
+    },
+    "items": [
+      {
+        "item_id": "ITEM-001",
+        "product_name": "Ultra-Fast NVMe Data Lake Storage",
+        "category": "Storage",
+        "quantity": 1,
+        "unit_price": 149.99
+      },
+      {
+        "item_id": "ITEM-002",
+        "product_name": "Cloud DataOps Automation Key",
+        "category": "Software",
+        "quantity": 2,
+        "unit_price": 54.99
+      }
+    ],
+    "delivery": {
+      "status": "CONFIRMED",
+      "estimated_days": 2,
+      "address": {
+        "city": "Frankfurt",
+        "country": "Germany"
+      }
+    }
+  }
+}

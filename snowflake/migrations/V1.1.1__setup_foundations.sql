@@ -1,0 +1,149 @@
+-- ==============================================================================
+-- Migration: V1.1.1__setup_foundations.sql
+-- Description: Core Warehouses, Medallion Databases (BRONZE_DB, SILVER_DB, GOLD_DB),
+--              and Enterprise RBAC Role Hierarchy.
+-- ==============================================================================
+
+USE ROLE ACCOUNTADMIN;
+
+-- =============================================================================
+-- 1. DEDICATED VIRTUAL WAREHOUSES (Compute Layer Decoupling)
+-- =============================================================================
+-- Ingestion Warehouse: Sized for COPY INTO batch and Snowpipe micro-batch operations
+CREATE WAREHOUSE IF NOT EXISTS INGESTION_WH
+    WAREHOUSE_SIZE = 'X-SMALL'
+    AUTO_SUSPEND = 60
+    AUTO_RESUME = TRUE
+    INITIALLY_SUSPENDED = TRUE
+    COMMENT = 'Dedicated warehouse for batch COPY INTO and ingestion workloads';
+
+-- Transform Warehouse: Sized for declarative Dynamic Tables & Task orchestration
+CREATE WAREHOUSE IF NOT EXISTS TRANSFORM_WH
+    WAREHOUSE_SIZE = 'SMALL'
+    AUTO_SUSPEND = 120
+    AUTO_RESUME = TRUE
+    INITIALLY_SUSPENDED = TRUE
+    COMMENT = 'Dedicated warehouse for Dynamic Tables, Streams & Tasks, and ELT transformations';
+
+-- BI & Serving Warehouse: Sized for analysts and reporting with zero ETL contention
+CREATE WAREHOUSE IF NOT EXISTS BI_WH
+    WAREHOUSE_SIZE = 'X-SMALL'
+    AUTO_SUSPEND = 300
+    AUTO_RESUME = TRUE
+    INITIALLY_SUSPENDED = TRUE
+    COMMENT = 'Dedicated warehouse for BI dashboards, Streamlit apps, and Ad-Hoc queries';
+
+
+-- =============================================================================
+-- 2. MEDALLION DATABASES (Separate Databases for Architecture Isolation)
+-- =============================================================================
+
+-- Bronze Database: Raw landing zone for untransformed data
+CREATE DATABASE IF NOT EXISTS BRONZE_DB
+    COMMENT = 'Medallion Bronze Layer: Raw landing zone for untransformed data';
+
+CREATE SCHEMA IF NOT EXISTS BRONZE_DB.RAW
+    COMMENT = 'Raw untransformed tables populated by Snowpipe & COPY INTO';
+
+CREATE SCHEMA IF NOT EXISTS BRONZE_DB.STAGING
+    COMMENT = 'Internal/External stages and file format definitions';
+
+
+-- Silver Database: Conformed, cleaned, flattened, and validated data
+CREATE DATABASE IF NOT EXISTS SILVER_DB
+    COMMENT = 'Medallion Silver Layer: Conformed, flattened, enriched data and fraud audit';
+
+CREATE SCHEMA IF NOT EXISTS SILVER_DB.CONFORMED
+    COMMENT = 'Dynamic Tables providing clean, typed, flattened structures';
+
+CREATE SCHEMA IF NOT EXISTS SILVER_DB.FRAUD
+    COMMENT = 'Imperative Streams & Tasks processing fraud and anomaly detection';
+
+CREATE SCHEMA IF NOT EXISTS SILVER_DB.GOVERNANCE
+    COMMENT = 'Snowflake Horizon Masking and Row Access Policies';
+
+
+-- Gold Database: Curated business marts and analytical aggregations
+CREATE DATABASE IF NOT EXISTS GOLD_DB
+    COMMENT = 'Medallion Gold Layer: Curated star schema marts and executive reporting';
+
+CREATE SCHEMA IF NOT EXISTS GOLD_DB.ANALYTICS
+    COMMENT = 'Dynamic Tables computing business KPIs and dimensional models';
+
+CREATE SCHEMA IF NOT EXISTS GOLD_DB.REPORTING
+    COMMENT = 'Secure serving views consumed by Tableau, PowerBI, and Streamlit';
+
+
+-- Utilities Database: Centralized change tracking and administrative tools
+CREATE DATABASE IF NOT EXISTS UTILS_DB
+    COMMENT = 'Administrative tools, schemachange history, and cross-db utilities';
+
+CREATE SCHEMA IF NOT EXISTS UTILS_DB.CHANGELOG
+    COMMENT = 'Database migration change history tables';
+
+
+-- =============================================================================
+-- 3. ENTERPRISE RBAC ROLE HIERARCHY (Horizon Least-Privilege Access Control)
+-- =============================================================================
+
+CREATE ROLE IF NOT EXISTS DATA_INGEST_ROLE   COMMENT = 'Operates ingestion pipelines and stages in BRONZE_DB';
+CREATE ROLE IF NOT EXISTS DATA_ENGINEER_ROLE COMMENT = 'Develops Dynamic Tables, Streams, and Tasks in SILVER_DB & GOLD_DB';
+CREATE ROLE IF NOT EXISTS DATA_ANALYST_ROLE  COMMENT = 'Queries conformed data subject to Horizon security policies';
+CREATE ROLE IF NOT EXISTS BI_CONSUMER_ROLE   COMMENT = 'Read-only access to GOLD_DB reporting views and dashboards';
+
+-- Build Clean Role Inheritance:
+-- BI_CONSUMER_ROLE -> DATA_ANALYST_ROLE -> DATA_ENGINEER_ROLE -> DATA_INGEST_ROLE -> SYSADMIN
+GRANT ROLE BI_CONSUMER_ROLE   TO ROLE DATA_ANALYST_ROLE;
+GRANT ROLE DATA_ANALYST_ROLE  TO ROLE DATA_ENGINEER_ROLE;
+GRANT ROLE DATA_ENGINEER_ROLE TO ROLE DATA_INGEST_ROLE;
+GRANT ROLE DATA_INGEST_ROLE   TO ROLE SYSADMIN;
+
+-- Grant Warehouse Usage Privileges
+GRANT USAGE ON WAREHOUSE INGESTION_WH TO ROLE DATA_INGEST_ROLE;
+GRANT USAGE ON WAREHOUSE TRANSFORM_WH TO ROLE DATA_ENGINEER_ROLE;
+GRANT USAGE ON WAREHOUSE BI_WH        TO ROLE DATA_ANALYST_ROLE;
+GRANT USAGE ON WAREHOUSE BI_WH        TO ROLE BI_CONSUMER_ROLE;
+
+-- Grant Database & Schema Privileges
+-- 1. BRONZE_DB Privileges
+GRANT USAGE ON DATABASE BRONZE_DB TO ROLE DATA_INGEST_ROLE;
+GRANT ALL PRIVILEGES ON SCHEMA BRONZE_DB.RAW TO ROLE DATA_INGEST_ROLE;
+GRANT ALL PRIVILEGES ON SCHEMA BRONZE_DB.STAGING TO ROLE DATA_INGEST_ROLE;
+GRANT USAGE ON DATABASE BRONZE_DB TO ROLE DATA_ENGINEER_ROLE;
+GRANT USAGE ON SCHEMA BRONZE_DB.RAW TO ROLE DATA_ENGINEER_ROLE;
+GRANT SELECT ON ALL TABLES IN SCHEMA BRONZE_DB.RAW TO ROLE DATA_ENGINEER_ROLE;
+GRANT SELECT ON FUTURE TABLES IN SCHEMA BRONZE_DB.RAW TO ROLE DATA_ENGINEER_ROLE;
+
+-- 2. SILVER_DB Privileges
+GRANT ALL PRIVILEGES ON DATABASE SILVER_DB TO ROLE DATA_ENGINEER_ROLE;
+GRANT ALL PRIVILEGES ON SCHEMA SILVER_DB.CONFORMED TO ROLE DATA_ENGINEER_ROLE;
+GRANT ALL PRIVILEGES ON SCHEMA SILVER_DB.FRAUD TO ROLE DATA_ENGINEER_ROLE;
+GRANT ALL PRIVILEGES ON SCHEMA SILVER_DB.GOVERNANCE TO ROLE DATA_ENGINEER_ROLE;
+GRANT USAGE ON DATABASE SILVER_DB TO ROLE DATA_ANALYST_ROLE;
+GRANT USAGE ON SCHEMA SILVER_DB.CONFORMED TO ROLE DATA_ANALYST_ROLE;
+GRANT USAGE ON SCHEMA SILVER_DB.FRAUD TO ROLE DATA_ANALYST_ROLE;
+GRANT SELECT ON ALL TABLES IN SCHEMA SILVER_DB.CONFORMED TO ROLE DATA_ANALYST_ROLE;
+GRANT SELECT ON FUTURE TABLES IN SCHEMA SILVER_DB.CONFORMED TO ROLE DATA_ANALYST_ROLE;
+GRANT SELECT ON ALL TABLES IN SCHEMA SILVER_DB.FRAUD TO ROLE DATA_ANALYST_ROLE;
+GRANT SELECT ON FUTURE TABLES IN SCHEMA SILVER_DB.FRAUD TO ROLE DATA_ANALYST_ROLE;
+
+-- 3. GOLD_DB Privileges
+GRANT ALL PRIVILEGES ON DATABASE GOLD_DB TO ROLE DATA_ENGINEER_ROLE;
+GRANT ALL PRIVILEGES ON SCHEMA GOLD_DB.ANALYTICS TO ROLE DATA_ENGINEER_ROLE;
+GRANT ALL PRIVILEGES ON SCHEMA GOLD_DB.REPORTING TO ROLE DATA_ENGINEER_ROLE;
+GRANT USAGE ON DATABASE GOLD_DB TO ROLE DATA_ANALYST_ROLE;
+GRANT USAGE ON SCHEMA GOLD_DB.ANALYTICS TO ROLE DATA_ANALYST_ROLE;
+GRANT USAGE ON SCHEMA GOLD_DB.REPORTING TO ROLE DATA_ANALYST_ROLE;
+GRANT SELECT ON ALL TABLES IN SCHEMA GOLD_DB.ANALYTICS TO ROLE DATA_ANALYST_ROLE;
+GRANT SELECT ON FUTURE TABLES IN SCHEMA GOLD_DB.ANALYTICS TO ROLE DATA_ANALYST_ROLE;
+GRANT SELECT ON ALL VIEWS IN SCHEMA GOLD_DB.REPORTING TO ROLE DATA_ANALYST_ROLE;
+GRANT SELECT ON FUTURE VIEWS IN SCHEMA GOLD_DB.REPORTING TO ROLE DATA_ANALYST_ROLE;
+
+GRANT USAGE ON DATABASE GOLD_DB TO ROLE BI_CONSUMER_ROLE;
+GRANT USAGE ON SCHEMA GOLD_DB.REPORTING TO ROLE BI_CONSUMER_ROLE;
+GRANT SELECT ON ALL VIEWS IN SCHEMA GOLD_DB.REPORTING TO ROLE BI_CONSUMER_ROLE;
+GRANT SELECT ON FUTURE VIEWS IN SCHEMA GOLD_DB.REPORTING TO ROLE BI_CONSUMER_ROLE;
+
+-- 4. UTILS_DB Privileges
+GRANT ALL PRIVILEGES ON DATABASE UTILS_DB TO ROLE DATA_ENGINEER_ROLE;
+GRANT ALL PRIVILEGES ON SCHEMA UTILS_DB.CHANGELOG TO ROLE DATA_ENGINEER_ROLE;

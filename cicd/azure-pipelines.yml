@@ -1,0 +1,117 @@
+# ==============================================================================
+# Azure DevOps Pipeline: Snowflake Schemachange CI/CD
+# ==============================================================================
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - snowflake/migrations/*
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - snowflake/migrations/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: Snowflake-Credentials # Contains SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD
+
+stages:
+  # ----------------------------------------------------------------------------
+  # Stage 1: Continuous Integration (Linting & Dry Run on PR)
+  # ----------------------------------------------------------------------------
+  - stage: CI_Validation
+    displayName: "CI Validation & Linting"
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    jobs:
+      - job: Validate
+        displayName: "SQLFluff Lint & Dry-Run"
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.11'
+          - script: |
+              pip install sqlfluff schemachange
+              sqlfluff lint snowflake/migrations/ --dialect snowflake || true
+              schemachange deploy \
+                --root-folder snowflake/migrations \
+                --snowflake-account "$(SNOWFLAKE_ACCOUNT)" \
+                --snowflake-user "$(SNOWFLAKE_USER)" \
+                --snowflake-role "MDP_ADMIN" \
+                --snowflake-warehouse "TRANSFORM_WH" \
+                --snowflake-database "MODERN_DATA_PLATFORM_DEV" \
+                --dry-run
+            displayName: "Run Linting and schemachange Dry-Run"
+            env:
+              SNOWFLAKE_PASSWORD: $(SNOWFLAKE_PASSWORD)
+
+  # ----------------------------------------------------------------------------
+  # Stage 2: Deploy to DEV
+  # ----------------------------------------------------------------------------
+  - stage: Deploy_DEV
+    displayName: "Deploy to Snowflake DEV"
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: DeployToDevDatabase
+        environment: 'snowflake-dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - task: UsePythonVersion@0
+                  inputs:
+                    versionSpec: '3.11'
+                - script: |
+                    pip install schemachange
+                    schemachange deploy \
+                      --root-folder snowflake/migrations \
+                      --snowflake-account "$(SNOWFLAKE_ACCOUNT)" \
+                      --snowflake-user "$(SNOWFLAKE_USER)" \
+                      --snowflake-role "MDP_ADMIN" \
+                      --snowflake-warehouse "TRANSFORM_WH" \
+                      --snowflake-database "MODERN_DATA_PLATFORM_DEV" \
+                      --change-history-table "MODERN_DATA_PLATFORM_DEV.UTILS.CHANGE_HISTORY"
+                  displayName: "Execute DEV Migration"
+                  env:
+                    SNOWFLAKE_PASSWORD: $(SNOWFLAKE_PASSWORD)
+
+  # ----------------------------------------------------------------------------
+  # Stage 3: Deploy to PROD (with Manual Approval Gate in Environment)
+  # ----------------------------------------------------------------------------
+  - stage: Deploy_PROD
+    displayName: "Deploy to Snowflake PROD"
+    dependsOn: Deploy_DEV
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: DeployToProdDatabase
+        environment: 'snowflake-prod'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - task: UsePythonVersion@0
+                  inputs:
+                    versionSpec: '3.11'
+                - script: |
+                    pip install schemachange
+                    schemachange deploy \
+                      --root-folder snowflake/migrations \
+                      --snowflake-account "$(SNOWFLAKE_ACCOUNT)" \
+                      --snowflake-user "$(SNOWFLAKE_USER)" \
+                      --snowflake-role "MDP_ADMIN" \
+                      --snowflake-warehouse "TRANSFORM_WH" \
+                      --snowflake-database "MODERN_DATA_PLATFORM" \
+                      --change-history-table "MODERN_DATA_PLATFORM.UTILS.CHANGE_HISTORY"
+                  displayName: "Execute PROD Migration"
+                  env:
+                    SNOWFLAKE_PASSWORD: $(SNOWFLAKE_PASSWORD)
