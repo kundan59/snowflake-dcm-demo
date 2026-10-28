@@ -36,7 +36,8 @@ $cmd = "schemachange deploy --root-folder `"$MigrationsDir`" " +
        "--snowflake-role `"$SnowflakeRole`" " +
        "--snowflake-warehouse `"$SnowflakeWarehouse`" " +
        "--snowflake-database `"$SnowflakeDatabase`" " +
-       "--change-history-table `"UTILS_DB.CHANGELOG.CHANGE_HISTORY`""
+       "--change-history-table `"UTILS_DB.CHANGELOG.CHANGE_HISTORY`" " +
+       "--create-change-history-table"
 
 if ($DryRun) {
     Write-Host "`n[DRY RUN MODE ENABLED]" -ForegroundColor Yellow

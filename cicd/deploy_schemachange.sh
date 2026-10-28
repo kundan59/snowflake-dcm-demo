@@ -34,6 +34,7 @@ CMD=(
     --snowflake-warehouse "$SNOWFLAKE_WAREHOUSE"
     --snowflake-database "$SNOWFLAKE_DATABASE"
     --change-history-table "UTILS_DB.CHANGELOG.CHANGE_HISTORY"
+    --create-change-history-table
 )
 
 if [ "$DRY_RUN" = "true" ]; then

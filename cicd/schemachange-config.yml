@@ -9,6 +9,7 @@ root-folder: "snowflake/migrations"
 
 # Snowflake metadata table tracking applied migrations in UTILS_DB
 change-history-table: "UTILS_DB.CHANGELOG.CHANGE_HISTORY"
+create-change-history-table: true
 
 # Target connection defaults (Can be overridden via environment variables or CLI flags)
 snowflake-account: "${SNOWFLAKE_ACCOUNT}"
