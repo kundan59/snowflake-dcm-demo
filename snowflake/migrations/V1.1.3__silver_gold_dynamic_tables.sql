@@ -19,47 +19,69 @@ CREATE OR REPLACE DYNAMIC TABLE SILVER_DB.CONFORMED.DT_ORDERS_FLATTENED
     WAREHOUSE = TRANSFORM_WH
     COMMENT = 'Silver Layer: Cleaned, conformed orders flattened from Bronze JSON with catalog join'
 AS
+WITH flattened_orders AS (
+    SELECT
+        -- Order Header Attributes (Extracted via dot/colon notation from VARIANT)
+        e.payload:order.order_id::STRING                            AS order_id,
+        e.payload:event_id::STRING                                  AS event_id,
+        e.payload:event_type::STRING                                AS event_type,
+        COALESCE(e.payload:timestamp::TIMESTAMP_NTZ,
+                 e.ingested_at::TIMESTAMP_NTZ)                      AS order_timestamp,
+
+        -- Customer Profile
+        e.payload:order.customer.customer_id::STRING                AS customer_id,
+        e.payload:order.customer.name::STRING                       AS customer_name,
+        e.payload:order.customer.email::STRING                      AS customer_email,
+        COALESCE(e.payload:order.customer.region::STRING, 'GLOBAL') AS customer_region,
+        e.payload:order.customer.tier::STRING                       AS customer_tier,
+
+        -- Payment Details
+        e.payload:order.payment.method::STRING                      AS payment_method,
+        e.payload:order.payment.card_last4::STRING                  AS payment_card_last4,
+        e.payload:order.payment.currency::STRING                    AS currency,
+        e.payload:order.payment.total_amount::NUMBER(12,2)          AS order_total_amount,
+
+        -- Flattened Order Line Items (Array unnesting via LATERAL FLATTEN)
+        f.value:item_id::STRING                                     AS item_id,
+        f.value:product_name::STRING                                AS item_product_name,
+        f.value:category::STRING                                    AS item_category,
+        f.value:quantity::NUMBER(10, 0)                             AS quantity,
+        f.value:unit_price::NUMBER(12, 2)                           AS unit_price,
+
+        -- Audit Lineage
+        e.source_file                                               AS bronze_source_file,
+        e.ingested_at                                               AS bronze_ingested_at
+    FROM BRONZE_DB.RAW.RAW_ORDERS e,
+    LATERAL FLATTEN(input => e.payload:order.items) f
+    WHERE e.payload:order.order_id IS NOT NULL
+)
 SELECT
-    -- Order Header Attributes (Extracted via dot/colon notation from VARIANT)
-    e.payload:order.order_id::STRING                            AS order_id,
-    e.payload:event_id::STRING                                  AS event_id,
-    e.payload:event_type::STRING                                AS event_type,
-    COALESCE(e.payload:timestamp::TIMESTAMP_NTZ,
-             e.ingested_at::TIMESTAMP_NTZ)                      AS order_timestamp,
-
-    -- Customer Profile
-    e.payload:order.customer.customer_id::STRING                AS customer_id,
-    e.payload:order.customer.name::STRING                       AS customer_name,
-    e.payload:order.customer.email::STRING                      AS customer_email,
-    COALESCE(e.payload:order.customer.region::STRING, 'GLOBAL') AS customer_region,
-    e.payload:order.customer.tier::STRING                       AS customer_tier,
-
-    -- Payment Details
-    e.payload:order.payment.method::STRING                      AS payment_method,
-    e.payload:order.payment.card_last4::STRING                  AS payment_card_last4,
-    e.payload:order.payment.currency::STRING                    AS currency,
-    e.payload:order.payment.total_amount::NUMBER(12,2)          AS order_total_amount,
-
-    -- Flattened Order Line Items (Array unnesting via LATERAL FLATTEN)
-    f.value:item_id::STRING                                     AS item_id,
-    COALESCE(cat.product_name, f.value:product_name::STRING)    AS product_name,
-    COALESCE(cat.category, f.value:category::STRING, 'General') AS product_category,
-    f.value:quantity::NUMBER(10, 0)                             AS quantity,
-    f.value:unit_price::NUMBER(12, 2)                           AS unit_price,
-    ROUND(f.value:quantity::NUMBER * f.value:unit_price::NUMBER, 2) AS line_total_amount,
-
-    -- Enriched Cost & Margin from Batch Product Catalog (Joined from BRONZE_DB)
-    COALESCE(cat.supplier_cost, 0.00)                           AS supplier_cost,
-    ROUND((f.value:unit_price::NUMBER - COALESCE(cat.supplier_cost, 0.00)) * f.value:quantity::NUMBER, 2) AS line_gross_profit,
-
-    -- Audit Lineage
-    e.source_file                                               AS bronze_source_file,
-    e.ingested_at                                               AS bronze_ingested_at
-FROM BRONZE_DB.RAW.RAW_ORDERS e,
-LATERAL FLATTEN(input => e.payload:order.items) f
+    fo.order_id,
+    fo.event_id,
+    fo.event_type,
+    fo.order_timestamp,
+    fo.customer_id,
+    fo.customer_name,
+    fo.customer_email,
+    fo.customer_region,
+    fo.customer_tier,
+    fo.payment_method,
+    fo.payment_card_last4,
+    fo.currency,
+    fo.order_total_amount,
+    fo.item_id,
+    COALESCE(cat.product_name, fo.item_product_name)                AS product_name,
+    COALESCE(cat.category, fo.item_category, 'General')            AS product_category,
+    fo.quantity,
+    fo.unit_price,
+    ROUND(fo.quantity * fo.unit_price, 2)                          AS line_total_amount,
+    COALESCE(cat.supplier_cost, 0.00)                               AS supplier_cost,
+    ROUND((fo.unit_price - COALESCE(cat.supplier_cost, 0.00)) * fo.quantity, 2) AS line_gross_profit,
+    fo.bronze_source_file,
+    fo.bronze_ingested_at
+FROM flattened_orders fo
 LEFT JOIN BRONZE_DB.RAW.PRODUCT_CATALOG_RAW cat
-    ON f.value:item_id::STRING = cat.product_id
-WHERE e.payload:order.order_id IS NOT NULL;
+    ON fo.item_id = cat.product_id;
 
 
 -- -----------------------------------------------------------------------------
